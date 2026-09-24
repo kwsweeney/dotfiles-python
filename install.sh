@@ -96,11 +96,24 @@ PY
 }
 
 main() {
+  local active_shell
+
   cd "${REPO_ROOT}"
   ensure_pipx
   ensure_poetry
-  configure_shell_rc "${HOME}/.bashrc"
-  configure_shell_rc "${HOME}/.zshrc"
+
+  active_shell="$(basename "${SHELL:-bash}")"
+  if [[ "${active_shell}" == "zsh" ]]; then
+    configure_shell_rc "${HOME}/.zshrc"
+    if [[ -f "${HOME}/.bashrc" ]]; then
+      configure_shell_rc "${HOME}/.bashrc"
+    fi
+  else
+    configure_shell_rc "${HOME}/.bashrc"
+    if [[ -f "${HOME}/.zshrc" ]]; then
+      configure_shell_rc "${HOME}/.zshrc"
+    fi
+  fi
 }
 
 main "$@"
