@@ -1,8 +1,17 @@
 # dotfiles-python
 
-Python-focused dotfiles for GitHub Codespaces.
+<<<<<<< HEAD
+Common dotfiles for a Python project.
 
-## What this config does
+## Included files
+
+- `.editorconfig` for consistent formatting defaults
+- `.gitignore` for Python, virtualenv, and build artifacts
+- `.pre-commit-config.yaml` with basic file hygiene and a Ruff hook
+- `pyproject.toml` with baseline `ruff` and `coverage` settings
+- `install.sh` for Codespaces bootstrap of Python + Poetry defaults
+
+## Codespaces bootstrap behavior
 
 When this repository is used as your Codespaces dotfiles repo, the `install.sh` script:
 
