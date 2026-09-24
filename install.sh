@@ -16,7 +16,7 @@ ensure_pipx() {
 
 ensure_poetry() {
   if pipx list --short | grep -qx "poetry"; then
-    pipx upgrade poetry || true
+    pipx upgrade poetry
     return
   fi
 
@@ -31,6 +31,8 @@ configure_poetry_defaults() {
 configure_bashrc() {
   local start_marker="# >>> dotfiles-python >>>"
   local end_marker="# <<< dotfiles-python <<<"
+
+  touch "${BASHRC}"
 
   if grep -qF "${start_marker}" "${BASHRC}"; then
     sed -i "/${start_marker}/,/${end_marker}/d" "${BASHRC}"
