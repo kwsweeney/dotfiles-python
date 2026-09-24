@@ -9,7 +9,7 @@ When this repository is used as your Codespaces dotfiles repo, the `install.sh` 
 - Installs/updates `pipx` for user-scoped Python CLI tooling
 - Installs/updates `poetry` with `pipx`
 - Sets Poetry defaults for project-local virtual environments
-- Adds Python/Poetry helper aliases to your `~/.bashrc`
+- Adds Python/Poetry helper aliases to your `~/.bashrc` and `~/.zshrc`
 
 ## Included shell aliases
 
