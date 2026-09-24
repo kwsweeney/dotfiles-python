@@ -17,6 +17,7 @@ htmlcov/
 
 build/
 dist/
+.eggs/
 *.egg-info/
 
 .DS_Store
