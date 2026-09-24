@@ -6,7 +6,7 @@ Python-focused dotfiles for GitHub Codespaces.
 
 When this repository is used as your Codespaces dotfiles repo, the `install.sh` script:
 
-- Installs/updates `pipx` for user-scoped Python CLI tooling
+- Installs `pipx` for user-scoped Python CLI tooling when it is missing
 - Installs/updates `poetry` with `pipx`
 - Sets Poetry defaults for project-local virtual environments via shell environment variables
 - Adds Python/Poetry helper aliases to your `~/.bashrc` and `~/.zshrc`

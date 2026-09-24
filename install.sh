@@ -9,7 +9,10 @@ ensure_pipx() {
   fi
 
   if ! python3 -m pip --version >/dev/null 2>&1; then
-    python3 -m ensurepip --upgrade
+    if ! python3 -m ensurepip --upgrade >/dev/null 2>&1; then
+      echo "python3 pip is unavailable and could not be bootstrapped with ensurepip." >&2
+      exit 1
+    fi
   fi
 
   python3 -m pip install --user --upgrade pipx
@@ -50,7 +53,10 @@ configure_shell_rc() {
 # >>> dotfiles-python >>>
 export POETRY_VIRTUALENVS_IN_PROJECT=true
 export POETRY_VIRTUALENVS_PREFER_ACTIVE_PYTHON=true
-export PATH="${HOME}/.local/bin:${PATH}"
+case ":${PATH}:" in
+  *":${HOME}/.local/bin:"*) ;;
+  *) export PATH="${HOME}/.local/bin:${PATH}" ;;
+esac
 
 case $- in
   *i*)
