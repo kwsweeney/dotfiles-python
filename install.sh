@@ -34,12 +34,18 @@ configure_bashrc() {
 
   touch "${BASHRC}"
 
-  if grep -qF "${start_marker}" "${BASHRC}"; then
+  if grep -qF "${start_marker}" "${BASHRC}" && grep -qF "${end_marker}" "${BASHRC}"; then
     awk -v start="${start_marker}" -v end="${end_marker}" '
       $0 == start { skip = 1; next }
       $0 == end { skip = 0; next }
       !skip { print }
     ' "${BASHRC}" >"${BASHRC}.tmp"
+    mv "${BASHRC}.tmp" "${BASHRC}"
+  elif grep -qF "${start_marker}" "${BASHRC}"; then
+    awk -v start="${start_marker}" '$0 != start { print }' "${BASHRC}" >"${BASHRC}.tmp"
+    mv "${BASHRC}.tmp" "${BASHRC}"
+  elif grep -qF "${end_marker}" "${BASHRC}"; then
+    awk -v end="${end_marker}" '$0 != end { print }' "${BASHRC}" >"${BASHRC}.tmp"
     mv "${BASHRC}.tmp" "${BASHRC}"
   fi
 
