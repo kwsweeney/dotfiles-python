@@ -15,14 +15,11 @@ ensure_pipx() {
 }
 
 ensure_poetry() {
-  if ! pipx upgrade poetry; then
+  if pipx runpip poetry --version >/dev/null 2>&1; then
+    pipx upgrade poetry
+  else
     pipx install poetry
   fi
-}
-
-configure_poetry_defaults() {
-  poetry config virtualenvs.in-project true
-  poetry config virtualenvs.prefer-active-python true
 }
 
 configure_bashrc() {
@@ -49,6 +46,7 @@ configure_bashrc() {
   cat >>"${BASHRC}" <<'EOF'
 # >>> dotfiles-python >>>
 export POETRY_VIRTUALENVS_IN_PROJECT=true
+export POETRY_VIRTUALENVS_PREFER_ACTIVE_PYTHON=true
 export PATH="${HOME}/.local/bin:${PATH}"
 
 alias py='python3'
@@ -65,7 +63,6 @@ main() {
   cd "${REPO_ROOT}"
   ensure_pipx
   ensure_poetry
-  configure_poetry_defaults
   configure_bashrc
 }
 
