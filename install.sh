@@ -15,12 +15,9 @@ ensure_pipx() {
 }
 
 ensure_poetry() {
-  if pipx list 2>/dev/null | grep -q "package poetry "; then
-    pipx upgrade poetry
-    return
+  if ! pipx upgrade poetry; then
+    pipx install poetry
   fi
-
-  pipx install poetry
 }
 
 configure_poetry_defaults() {
