@@ -45,20 +45,31 @@ configure_shell_rc() {
 
   touch "${rc_file}"
 
-  if grep -qF "${start_marker}" "${rc_file}" && grep -qF "${end_marker}" "${rc_file}"; then
-    awk -v start="${start_marker}" -v end="${end_marker}" '
-      $0 == start { skip = 1; next }
-      $0 == end { skip = 0; next }
-      !skip { print }
-    ' "${rc_file}" >"${rc_file}.tmp"
-    mv "${rc_file}.tmp" "${rc_file}"
-  elif grep -qF "${start_marker}" "${rc_file}"; then
-    awk -v start="${start_marker}" '$0 != start { print }' "${rc_file}" >"${rc_file}.tmp"
-    mv "${rc_file}.tmp" "${rc_file}"
-  elif grep -qF "${end_marker}" "${rc_file}"; then
-    awk -v end="${end_marker}" '$0 != end { print }' "${rc_file}" >"${rc_file}.tmp"
-    mv "${rc_file}.tmp" "${rc_file}"
-  fi
+  python3 - "${rc_file}" "${start_marker}" "${end_marker}" <<'PY'
+from pathlib import Path
+import sys
+
+rc_path = Path(sys.argv[1])
+start_marker = sys.argv[2]
+end_marker = sys.argv[3]
+
+lines = rc_path.read_text().splitlines(keepends=True)
+
+start_index = next((idx for idx, line in enumerate(lines) if line.rstrip("\n") == start_marker), None)
+if start_index is not None:
+    end_index = next(
+        (idx for idx in range(start_index + 1, len(lines)) if lines[idx].rstrip("\n") == end_marker),
+        None,
+    )
+    if end_index is not None:
+        lines = lines[:start_index] + lines[end_index + 1 :]
+    else:
+        lines = [line for line in lines if line.rstrip("\n") != start_marker]
+else:
+    lines = [line for line in lines if line.rstrip("\n") != end_marker]
+
+rc_path.write_text("".join(lines))
+PY
 
   cat >>"${rc_file}" <<'EOF'
 # >>> dotfiles-python >>>
