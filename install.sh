@@ -15,7 +15,7 @@ ensure_pipx() {
 }
 
 ensure_poetry() {
-  if pipx list | grep -q "package poetry "; then
+  if pipx list 2>/dev/null | grep -q "package poetry "; then
     pipx upgrade poetry
     return
   fi
@@ -54,7 +54,6 @@ alias pi='poetry install'
 alias pa='poetry add'
 alias pr='poetry run'
 alias pt='poetry run pytest'
-alias pc='poetry run python -m click'
 # <<< dotfiles-python <<<
 EOF
 }

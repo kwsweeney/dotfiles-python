@@ -19,4 +19,3 @@ When this repository is used as your Codespaces dotfiles repo, the `install.sh` 
 - `pa` → `poetry add`
 - `pr` → `poetry run`
 - `pt` → `poetry run pytest`
-- `pc` → `poetry run python -m click`
