@@ -15,7 +15,7 @@ ensure_pipx() {
 }
 
 ensure_poetry() {
-  if pipx list --short | grep -qx "poetry"; then
+  if pipx list | grep -q "package poetry "; then
     pipx upgrade poetry
     return
   fi
@@ -35,7 +35,12 @@ configure_bashrc() {
   touch "${BASHRC}"
 
   if grep -qF "${start_marker}" "${BASHRC}"; then
-    sed -i "/${start_marker}/,/${end_marker}/d" "${BASHRC}"
+    awk -v start="${start_marker}" -v end="${end_marker}" '
+      $0 == start { skip = 1; next }
+      $0 == end { skip = 0; next }
+      !skip { print }
+    ' "${BASHRC}" >"${BASHRC}.tmp"
+    mv "${BASHRC}.tmp" "${BASHRC}"
   fi
 
   cat >>"${BASHRC}" <<'EOF'
