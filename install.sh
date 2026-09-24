@@ -77,12 +77,16 @@ export POETRY_VIRTUALENVS_IN_PROJECT=true
 export POETRY_VIRTUALENVS_PREFER_ACTIVE_PYTHON=true
 export PATH="${HOME}/.local/bin:${PATH}"
 
-alias py='python3'
-alias p='poetry'
-alias pi='poetry install'
-alias pa='poetry add'
-alias pr='poetry run'
-alias pt='poetry run pytest'
+case $- in
+  *i*)
+    alias py='python3'
+    alias p='poetry'
+    alias pi='poetry install'
+    alias pa='poetry add'
+    alias pr='poetry run'
+    alias pt='poetry run pytest'
+    ;;
+esac
 # <<< dotfiles-python <<<
 EOF
 }
