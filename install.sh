@@ -8,7 +8,7 @@ ensure_pipx() {
     return
   fi
 
-  python3 -m pip install --user --upgrade pip pipx
+  python3 -m pip install --user --upgrade pipx
   python3 -m pipx ensurepath
   export PATH="${HOME}/.local/bin:${PATH}"
 }
@@ -53,7 +53,7 @@ rc_path = Path(sys.argv[1])
 start_marker = sys.argv[2]
 end_marker = sys.argv[3]
 
-lines = rc_path.read_text().splitlines(keepends=True)
+lines = rc_path.read_text(encoding="utf-8").splitlines(keepends=True)
 
 start_index = next((idx for idx, line in enumerate(lines) if line.rstrip("\n") == start_marker), None)
 if start_index is not None:
@@ -68,7 +68,7 @@ if start_index is not None:
 else:
     lines = [line for line in lines if line.rstrip("\n") != end_marker]
 
-rc_path.write_text("".join(lines))
+rc_path.write_text("".join(lines), encoding="utf-8")
 PY
 
   cat >>"${rc_file}" <<'EOF'
