@@ -40,38 +40,11 @@ ensure_poetry() {
 
 configure_shell_rc() {
   local rc_file="$1"
-  local start_marker="# >>> dotfiles-python >>>"
-  local end_marker="# <<< dotfiles-python <<<"
+  local managed_block
 
   touch "${rc_file}"
 
-  python3 - "${rc_file}" "${start_marker}" "${end_marker}" <<'PY'
-from pathlib import Path
-import sys
-
-rc_path = Path(sys.argv[1])
-start_marker = sys.argv[2]
-end_marker = sys.argv[3]
-
-lines = rc_path.read_text(encoding="utf-8").splitlines(keepends=True)
-
-start_index = next((idx for idx, line in enumerate(lines) if line.rstrip("\n") == start_marker), None)
-if start_index is not None:
-    end_index = next(
-        (idx for idx in range(start_index + 1, len(lines)) if lines[idx].rstrip("\n") == end_marker),
-        None,
-    )
-    if end_index is not None:
-        lines = lines[:start_index] + lines[end_index + 1 :]
-    else:
-        lines = [line for line in lines if line.rstrip("\n") != start_marker]
-else:
-    lines = [line for line in lines if line.rstrip("\n") != end_marker]
-
-rc_path.write_text("".join(lines), encoding="utf-8")
-PY
-
-  cat >>"${rc_file}" <<'EOF'
+  managed_block="$(cat <<'EOF'
 # >>> dotfiles-python >>>
 export POETRY_VIRTUALENVS_IN_PROJECT=true
 export POETRY_VIRTUALENVS_PREFER_ACTIVE_PYTHON=true
@@ -89,6 +62,29 @@ case $- in
 esac
 # <<< dotfiles-python <<<
 EOF
+)"
+
+  DOTFILES_PYTHON_BLOCK="${managed_block}" python3 - "${rc_file}" <<'PY'
+from pathlib import Path
+import os
+import sys
+
+rc_path = Path(sys.argv[1])
+managed_block = os.environ["DOTFILES_PYTHON_BLOCK"]
+contents = rc_path.read_text(encoding="utf-8")
+
+contents = contents.replace(f"{managed_block}\n", "")
+contents = contents.replace(f"\n{managed_block}", "")
+contents = contents.replace(managed_block, "")
+contents = contents.rstrip("\n")
+
+if contents:
+    contents = f"{contents}\n\n{managed_block}\n"
+else:
+    contents = f"{managed_block}\n"
+
+rc_path.write_text(contents, encoding="utf-8")
+PY
 }
 
 main() {
