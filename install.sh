@@ -14,7 +14,14 @@ ensure_pipx() {
 }
 
 is_poetry_installed() {
-  pipx list --json 2>/dev/null | python3 -c '
+  local pipx_json
+  pipx_json="$(pipx list --json 2>/dev/null || true)"
+
+  if [[ -z "${pipx_json}" ]]; then
+    return 1
+  fi
+
+  printf '%s' "${pipx_json}" | python3 -c '
 import json
 import sys
 
