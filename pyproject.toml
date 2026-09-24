@@ -16,7 +16,6 @@ select = [
 
 [tool.coverage.run]
 branch = true
-source = ["."]
 
 [tool.coverage.report]
 show_missing = true
