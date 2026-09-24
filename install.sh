@@ -14,8 +14,18 @@ ensure_pipx() {
   export PATH="${HOME}/.local/bin:${PATH}"
 }
 
+is_poetry_installed() {
+  pipx list --json 2>/dev/null | python3 -c '
+import json
+import sys
+
+data = json.load(sys.stdin)
+sys.exit(0 if "poetry" in data.get("venvs", {}) else 1)
+'
+}
+
 ensure_poetry() {
-  if pipx runpip poetry --version >/dev/null 2>&1; then
+  if is_poetry_installed; then
     pipx upgrade poetry
   else
     pipx install poetry
