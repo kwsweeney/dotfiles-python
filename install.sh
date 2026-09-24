@@ -8,6 +8,10 @@ ensure_pipx() {
     return
   fi
 
+  if ! python3 -m pip --version >/dev/null 2>&1; then
+    python3 -m ensurepip --upgrade
+  fi
+
   python3 -m pip install --user --upgrade pipx
   python3 -m pipx ensurepath
   export PATH="${HOME}/.local/bin:${PATH}"
@@ -42,8 +46,6 @@ configure_shell_rc() {
   local rc_file="$1"
   local managed_block
 
-  touch "${rc_file}"
-
   managed_block="$(cat <<'EOF'
 # >>> dotfiles-python >>>
 export POETRY_VIRTUALENVS_IN_PROJECT=true
@@ -71,7 +73,7 @@ import sys
 
 rc_path = Path(sys.argv[1])
 managed_block = os.environ["DOTFILES_PYTHON_BLOCK"]
-contents = rc_path.read_text(encoding="utf-8")
+contents = rc_path.read_text(encoding="utf-8") if rc_path.exists() else ""
 
 contents = contents.replace(f"{managed_block}\n", "")
 contents = contents.replace(f"\n{managed_block}", "")
